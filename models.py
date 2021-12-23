@@ -1,3 +1,4 @@
+from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -23,8 +24,46 @@ def decision_tree():
     modeling(clf, "Decision Tree")
 
 
-def knn(k=5):
+def get_best_k():
+    k_range = range(1, 20)
+    k_scores = []
 
+    for k in k_range:
+        clf = KNeighborsClassifier(n_neighbors=k)
+        scores = cross_val_score(clf, train_features, train_labels, cv=7, scoring='accuracy')
+        k_scores.append(scores.mean())
+
+    return (k_scores.index(max(k_scores))) + 1
+
+
+def get_best_n_estimators_ab():
+    # default = 50
+    n_range = range(40, 70)
+    n_scores = []
+
+    for n in n_range:
+        clf = AdaBoostClassifier(n_estimators=n)
+        scores = cross_val_score(clf, train_features, train_labels, cv=7, scoring='accuracy')
+        n_scores.append(scores.mean())
+
+    return (n_scores.index(max(n_scores))) + 30
+
+
+def get_best_n_estimators_rf():
+    # default = 100
+    n_range = range(80, 120)
+    n_scores = []
+
+    for n in n_range:
+        clf = RandomForestClassifier(n_estimators=n)
+        scores = cross_val_score(clf, train_features, train_labels, cv=7, scoring='accuracy')
+        n_scores.append(scores.mean())
+
+    return (n_scores.index(max(n_scores))) + 80
+
+
+def knn():
+    k = get_best_k()
     clf = KNeighborsClassifier(n_neighbors=k)
     modeling(clf, "K-Nearest Neighbors")
 
@@ -34,12 +73,14 @@ def naive_bayes():
     modeling(clf, "Naive Bayes")
 
 
-def ada_boost(estimators=50):
+def ada_boost():
+    estimators = get_best_n_estimators_ab()
     clf = AdaBoostClassifier(n_estimators=estimators)
     modeling(clf, "AdaBoost")
 
 
-def random_forests(estimators=50):
+def random_forests():
+    estimators = get_best_n_estimators_rf()
     clf = RandomForestClassifier(n_estimators=estimators)
     modeling(clf, "Random Forests")
 
