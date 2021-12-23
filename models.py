@@ -3,13 +3,15 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix, accuracy_score
 from input_data import train_features, train_labels, test_features, test_labels
 import time
 
 
-def results_format(classifier_name, train_time, prediction_time, accuracy):
+def results_format(classifier_name, train_time, prediction_time, accuracy, cm):
     print(classifier_name + ": ")
+    print("Confusion Matrix : ")
+    print(cm)
     print(f"training time= {round(train_time, 6)} s")
     print(f"prediction_time= {round(prediction_time, 6)} s")
     print(f"accuracy = {accuracy}")
@@ -22,6 +24,7 @@ def decision_tree():
 
 
 def knn(k=5):
+
     clf = KNeighborsClassifier(n_neighbors=k)
     modeling(clf, "K-Nearest Neighbors")
 
@@ -51,5 +54,7 @@ def modeling(clf, classifier_name):
     predictions = clf.predict(test_features)
     t2 = time.time()
     prediction_time = t2 - t1
+
+    cm = confusion_matrix(test_labels, predictions)
     accuracy = accuracy_score(predictions, test_labels)
-    results_format(classifier_name, train_time, prediction_time, accuracy)
+    results_format(classifier_name, train_time, prediction_time, accuracy, cm)
