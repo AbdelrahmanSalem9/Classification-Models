@@ -9,7 +9,8 @@ from input_data import train_features, train_labels, test_features, test_labels
 import time
 
 
-def results_format(classifier_name, train_time, prediction_time, accuracy, precision, sensitivity, specificity, cm):
+def results_format(classifier_name, train_time, prediction_time, accuracy, precision, sensitivity, specificity,
+                   f1_score, cm):
     print(classifier_name + ": ")
     print("Confusion Matrix : ")
     print(cm)
@@ -19,6 +20,7 @@ def results_format(classifier_name, train_time, prediction_time, accuracy, preci
     print(f"Precision = {precision}")
     print(f"Sensitivity = {sensitivity}")
     print(f"Specificity = {specificity}")
+    print(f"F score = {f1_score}")
     print("-------------------------------------------------------------------------------------")
 
 
@@ -115,5 +117,9 @@ def modeling(clf, classifier_name):
     # specificity = (TN) / (TN + FP)
     specificity = (cm[0][0]) / (cm[0][0] + cm[0][1])
 
+    # f1_score = 2 * (precision * recall) / (precision + recall)
+    f1_score = 2 * (precision * sensitivity) / (precision + sensitivity)
+
     results_format(classifier_name, train_time, prediction_time, accuracy, precision, sensitivity, specificity,
+                   f1_score,
                    cm)
