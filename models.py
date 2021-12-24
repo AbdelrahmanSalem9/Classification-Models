@@ -1,4 +1,4 @@
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_score, StratifiedKFold
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -32,10 +32,10 @@ def decision_tree():
 def get_best_k():
     k_range = range(1, 20)
     k_scores = []
-
+    skf = StratifiedKFold(n_splits=7)
     for k in k_range:
         clf = KNeighborsClassifier(n_neighbors=k)
-        scores = cross_val_score(clf, train_features, train_labels, cv=7, scoring='accuracy')
+        scores = cross_val_score(clf, train_features, train_labels, cv=skf, scoring='accuracy')
         k_scores.append(scores.mean())
 
     return (k_scores.index(max(k_scores))) + 1
@@ -45,10 +45,10 @@ def get_best_n_estimators_ab():
     # default = 50
     n_range = range(40, 70)
     n_scores = []
-
+    skf = StratifiedKFold(n_splits=7)
     for n in n_range:
         clf = AdaBoostClassifier(n_estimators=n)
-        scores = cross_val_score(clf, train_features, train_labels, cv=7, scoring='accuracy')
+        scores = cross_val_score(clf, train_features, train_labels, cv=skf, scoring='accuracy')
         n_scores.append(scores.mean())
 
     return (n_scores.index(max(n_scores))) + 30
@@ -58,10 +58,10 @@ def get_best_n_estimators_rf():
     # default = 100
     n_range = range(80, 120)
     n_scores = []
-
+    skf = StratifiedKFold(n_splits=7)
     for n in n_range:
         clf = RandomForestClassifier(n_estimators=n)
-        scores = cross_val_score(clf, train_features, train_labels, cv=7, scoring='accuracy')
+        scores = cross_val_score(clf, train_features, train_labels, cv=skf, scoring='accuracy')
         n_scores.append(scores.mean())
 
     return (n_scores.index(max(n_scores))) + 80
