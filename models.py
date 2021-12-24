@@ -9,13 +9,16 @@ from input_data import train_features, train_labels, test_features, test_labels
 import time
 
 
-def results_format(classifier_name, train_time, prediction_time, accuracy, cm):
+def results_format(classifier_name, train_time, prediction_time, accuracy, precision, sensitivity, specificity, cm):
     print(classifier_name + ": ")
     print("Confusion Matrix : ")
     print(cm)
-    print(f"training time= {round(train_time, 6)} s")
-    print(f"prediction_time= {round(prediction_time, 6)} s")
-    print(f"accuracy = {accuracy}")
+    print(f"Training time= {round(train_time, 6)} s")
+    print(f"Prediction_time= {round(prediction_time, 6)} s")
+    print(f"Accuracy = {accuracy}")
+    print(f"Precision = {precision}")
+    print(f"Sensitivity = {sensitivity}")
+    print(f"Specificity = {specificity}")
     print("-------------------------------------------------------------------------------------")
 
 
@@ -96,6 +99,21 @@ def modeling(clf, classifier_name):
     t2 = time.time()
     prediction_time = t2 - t1
 
+    """
+    CM = | TN FP |
+         | FN TP |
+    """
     cm = confusion_matrix(test_labels, predictions)
     accuracy = accuracy_score(predictions, test_labels)
-    results_format(classifier_name, train_time, prediction_time, accuracy, cm)
+
+    # precision = (TP) / (TP + FP)
+    precision = (cm[1][1]) / (cm[1][1] + cm[0][1])
+
+    # sensitivity = (TP) / (TP + FN)
+    sensitivity = (cm[1][1]) / (cm[1][1] + cm[1][0])
+
+    # specificity = (TN) / (TN + FP)
+    specificity = (cm[0][0]) / (cm[0][0] + cm[0][1])
+
+    results_format(classifier_name, train_time, prediction_time, accuracy, precision, sensitivity, specificity,
+                   cm)
